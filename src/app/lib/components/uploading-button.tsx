@@ -34,7 +34,7 @@ export function UploadingButton(props: {
 
     const params = useSearchParams();
 
-    const ref = params.get("ref");
+    const ref = params.get("ref") ?? "";
 
     return (
         <>
