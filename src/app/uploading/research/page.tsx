@@ -4,12 +4,13 @@ import { UploadingButton } from "@/app/lib/components/uploading-button";
 import Link from "next/link";
 import { Suspense } from "react";
 
-export default async function ResearchUploading({
-    searchParams,
-}: {
-    searchParams: { [key: string]: string };
-}) {
-    const query = await searchParams;
+type PageProps = {
+    searchParams: {
+        send?: string;
+    };
+};
+export default async function ResearchUploading(props: PageProps) {
+    const query = await props.searchParams;
     console.log(query.send);
 
     if (query.send !== undefined) return <Uploads />;
