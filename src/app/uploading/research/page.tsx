@@ -1,10 +1,23 @@
 "use server";
 
 import { UploadingButton } from "@/app/lib/components/uploading-button";
-import axios from "axios";
 import Link from "next/link";
+import { Suspense } from "react";
 
-export default async function ResearchUploading() {
+export default async function ResearchUploading({
+    searchParams,
+}: {
+    searchParams: { [key: string]: string };
+}) {
+    const query = await searchParams;
+    console.log(query.send);
+
+    if (query.send !== undefined) return <Uploads />;
+
+    return <InputInformation />;
+}
+
+function InputInformation() {
     return (
         <article className="flex flex-col items-center justify-center gap-16">
             <div className="flex justify-center ">
@@ -36,6 +49,24 @@ export default async function ResearchUploading() {
                     />
                 </label>
 
+                <div className="grid grid-cols-2 gap-4">
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">Level</legend>
+                        <select
+                            defaultValue="Pick a browser"
+                            className="select"
+                        >
+                            <option>Bachelors</option>
+                            <option>Masters</option>
+                            <option>Others</option>
+                        </select>
+                    </fieldset>
+                    <fieldset className="fieldset">
+                        <legend className="fieldset-legend">Browsers</legend>
+                        <input type="text" className="input" />
+                    </fieldset>
+                </div>
+
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">Description</legend>
                     <textarea
@@ -44,19 +75,43 @@ export default async function ResearchUploading() {
                     ></textarea>
                 </fieldset>
 
-                <UploadingButton
-                    trigger="research"
-                    data={{
-                        title: "",
-                        degree: "",
-                        description: "",
-                        authors: "",
-                        issueDate: "",
-                    }}
-                >
-                    Next
-                </UploadingButton>
+                <Suspense>
+                    <UploadingButton
+                        trigger="research"
+                        data={{
+                            title: "",
+                            degree: "",
+                            description: "",
+                            authors: "",
+                            issueDate: "",
+                        }}
+                    >
+                        Next
+                    </UploadingButton>
+                </Suspense>
             </div>
+        </article>
+    );
+}
+
+function Uploads() {
+    return (
+        <article className="flex flex-col items-center justify-center gap-16">
+            <div className="flex justify-center mb-32">
+                <ul className="steps w-[42rem]">
+                    <li className="step step-primary cursor-pointer">
+                        <Link href="/uploading">Book or Research?</Link>
+                    </li>
+                    <li className="step step-primary">Input Information</li>
+                    <li className="step step-primary">Upload & Save</li>
+                </ul>
+            </div>
+
+            <Suspense>
+                <UploadingButton trigger="upload">
+                    Upload & Save
+                </UploadingButton>
+            </Suspense>
         </article>
     );
 }
