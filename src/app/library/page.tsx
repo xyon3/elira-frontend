@@ -53,21 +53,33 @@ export default async function Repository(props: {
 
                 <div className="grid gap-8">
                     <ul className="list text-lg">
-                        {paginated.data.map((book: any) => {
-                            return (
-                                <li
-                                    key={book.id + "00"}
-                                    className="list-row hover:bg-base-200"
-                                >
-                                    <Book />
-                                    <a
-                                        href={`${process.env.ELIRA_BACKEND}${book.path}/${book.filename}`}
+                        {paginated.data.length > 0 ? (
+                            paginated.data.map((book: any) => {
+                                return (
+                                    <li
+                                        key={book.id + "00"}
+                                        className="list-row hover:bg-base-200"
                                     >
-                                        {book.title}
-                                    </a>
-                                </li>
-                            );
-                        })}
+                                        <Book />
+                                        <a
+                                            href={`${process.env.ELIRA_BACKEND}${book.path}/${book.filename}`}
+                                        >
+                                            {book.title}
+                                        </a>
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <div className="text-center flex flex-col gap-12 mt-32">
+                                <span className="text-9xl">🤷🏻</span>
+                                <div>
+                                    <h3 className="font-bold text-4xl">
+                                        There are no books here..
+                                    </h3>
+                                    <p>Ask the a custodian to upload some!</p>
+                                </div>
+                            </div>
+                        )}
                     </ul>
 
                     <div className="grid gap-8 place-items-center">

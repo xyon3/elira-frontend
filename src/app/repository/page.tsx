@@ -59,20 +59,33 @@ export default async function Repository(props: {
                 <div className="p-8">
                     <h4 className="font-bold text-lg">Recent uploads</h4>
                     <ul className="list">
-                        {recentResearches.map((research: any) => {
-                            return (
-                                <li
-                                    key={research.id}
-                                    className="list-row hover:bg-base-200"
-                                >
-                                    <a
-                                        href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                        {recentResearches.length > 0 ? (
+                            recentResearches.map((research: any) => {
+                                return (
+                                    <li
+                                        key={research.id}
+                                        className="list-row hover:bg-base-200"
                                     >
-                                        {research.title} ({research.issueDate})
-                                    </a>
-                                </li>
-                            );
-                        })}
+                                        <a
+                                            href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                                        >
+                                            {research.title} (
+                                            {research.issueDate})
+                                        </a>
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <div className="text-center flex items-center gap-6 mt-6">
+                                <span className="text-5xl">🤷🏻</span>
+                                <div>
+                                    <h3 className="font-bold text-xl">
+                                        There are no papers here..
+                                    </h3>
+                                    <p>Ask the a custodian to upload some!</p>
+                                </div>
+                            </div>
+                        )}
                     </ul>
                 </div>
             </section>
@@ -100,21 +113,34 @@ export default async function Repository(props: {
 
                 <div className="grid place-items-center gap-8">
                     <ul className="list text-lg">
-                        {paginated.data.map((research: any) => {
-                            return (
-                                <li
-                                    key={research.id + "00"}
-                                    className="list-row hover:bg-base-200"
-                                >
-                                    <FileText />
-                                    <a
-                                        href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                        {paginated.data.length > 0 ? (
+                            paginated.data.map((research: any) => {
+                                return (
+                                    <li
+                                        key={research.id + "00"}
+                                        className="list-row hover:bg-base-200"
                                     >
-                                        {research.title} ({research.issueDate})
-                                    </a>
-                                </li>
-                            );
-                        })}
+                                        <FileText />
+                                        <a
+                                            href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                                        >
+                                            {research.title} (
+                                            {research.issueDate})
+                                        </a>
+                                    </li>
+                                );
+                            })
+                        ) : (
+                            <div className="text-center flex flex-col gap-12 mt-32">
+                                <span className="text-9xl">🤷🏻</span>
+                                <div>
+                                    <h3 className="font-bold text-4xl">
+                                        There are no papers here..
+                                    </h3>
+                                    <p>Ask the a custodian to upload some!</p>
+                                </div>
+                            </div>
+                        )}
                     </ul>
                     <div className="join">
                         {Array.from(
