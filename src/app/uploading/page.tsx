@@ -23,7 +23,7 @@ export default async function Uploading() {
                 <div className="flex justify-center gap-6">
                     <Link
                         href="/uploading/book"
-                        className="cursor-pointer hover:bg-base-200 rounded-3xl border-white border-[0.1rem] p-8 space-y-4 w-64 flex flex-col items-center"
+                        className="cursor-pointer hover:bg-base-200 rounded-3xl border-base-300 border-[0.1rem] p-8 space-y-4 w-64 flex flex-col items-center"
                     >
                         <Book size={96} />
                         <span className="text-3xl font-bold">Book</span>
@@ -31,7 +31,7 @@ export default async function Uploading() {
                     <div className="divider divider-horizontal">OR</div>
                     <Link
                         href="/uploading/research"
-                        className="cursor-pointer hover:bg-base-200 rounded-3xl border-white border-[0.1rem] p-8 space-y-4 w-64 flex flex-col items-center"
+                        className="cursor-pointer hover:bg-base-200 rounded-3xl border-base-300 border-[0.1rem] p-8 space-y-4 w-64 flex flex-col items-center"
                     >
                         <Book size={96} />
                         <span className="text-3xl font-bold">Research</span>

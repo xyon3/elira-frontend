@@ -1,4 +1,20 @@
+"use client";
+
+import axios from "axios";
+import { use, useEffect } from "react";
+
 export default function Home() {
+    useEffect(() => {
+        axios({
+            method: "POST",
+            url: "/api/auth",
+            data: {
+                username: "",
+                password: "",
+            },
+        });
+    }, []);
+
     return (
         <article className="container">
             <div

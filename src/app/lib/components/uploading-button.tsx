@@ -3,6 +3,7 @@
 import axios from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 interface ResearchRequestBody {
     title: string;
@@ -35,6 +36,19 @@ export function UploadingButton(props: {
     const params = useSearchParams();
 
     const ref = params.get("ref") ?? "";
+    const send = params.get("send") ?? "";
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    let publication_required = false;
+
+    if (props.data) {
+        publication_required =
+            (props.data as ResearchRequestBody).issueDate === "" ||
+            (props.data as ResearchRequestBody).degree === "" ||
+            (props.data as ResearchRequestBody).authors === "" ||
+            (props.data as ResearchRequestBody).title === "";
+    }
 
     return (
         <>
@@ -47,30 +61,69 @@ export function UploadingButton(props: {
                         type="file"
                         className="file-input file-input-lg  w-96"
                         onChange={handleFileChange}
+                        accept="application/pdf"
                     />
                     <label className="label">Only pdf files are allowed</label>
                 </fieldset>
             )}
             <button
                 className="btn btn-primary"
+                disabled={isLoading}
                 onClick={() => {
-                    if (props.trigger == "research")
+                    if (props.trigger == "research") {
+                        if (publication_required) {
+                            return toast.error("Incomplete Fields", {
+                                closeButton: true,
+                                richColors: true,
+                                description:
+                                    "All fields are required to be filled except 'Description'",
+                            });
+                        }
                         return createResearchHandler(
                             props.data as ResearchRequestBody,
-                        ).then((res) =>
-                            router.replace(`?ref=${res.referenceID}&se`),
-                        );
-                    if (props.trigger == "book")
-                        return createBookHandler(
-                            props.data as BookRequestBody,
-                        ).then((res) =>
-                            router.replace(`?ref=${res.referenceID}&se`),
-                        );
+                        )
+                            .then((res) => {
+                                router.replace(
+                                    `?ref=${res.referenceID}&send=publication`,
+                                );
+                                setIsLoading(true);
+                            })
+                            .finally(() => setIsLoading(false));
+                    }
+                    if (props.trigger == "book") {
+                        if (props.data?.title === "") {
+                            return toast.error("Incomplete Fields", {
+                                closeButton: true,
+                                richColors: true,
+                                description:
+                                    "All fields are required to be filled except 'Description'",
+                            });
+                        }
+                        return createBookHandler(props.data as BookRequestBody)
+                            .then((res) => {
+                                router.replace(
+                                    `?ref=${res.referenceID}&send=book`,
+                                );
+                                setIsLoading(true);
+                            })
+                            .finally(() => setIsLoading(false));
+                    }
                     if (props.trigger == "upload")
-                        return fileUploadHandler(file, ref);
+                        return fileUploadHandler(file, ref, send)
+                            .then(() => {
+                                setIsLoading(true);
+                            })
+                            .finally(() => {
+                                setIsLoading(false);
+                                router.replace("/resource-success");
+                            });
                 }}
             >
-                {props.children}
+                {isLoading ? (
+                    <span className="loading loading-spinner loading-lg"></span>
+                ) : (
+                    props.children
+                )}
             </button>
         </>
     );
@@ -94,24 +147,27 @@ async function createBookHandler(data: BookRequestBody) {
     return response.data;
 }
 
-async function fileUploadHandler(file: File | null, referenceID: string) {
+async function fileUploadHandler(
+    file: File | null,
+    referenceID: string,
+    type: string,
+) {
     if (!file) return;
 
     const formData = new FormData();
     formData.append("file", file);
 
-    try {
-        const res = await axios.post(
-            "/api/upload?unique=" + referenceID,
-            formData,
-            {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            },
-        );
+    const url =
+        type === "publication"
+            ? "/api/info-publication?unique="
+            : "/api/info-book?unique=";
 
-        console.log("Upload success:", res.data);
+    try {
+        const res = await axios.put(url + referenceID, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
     } catch (err) {
         console.error("Upload failed:", err);
     }
