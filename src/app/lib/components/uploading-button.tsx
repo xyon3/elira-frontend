@@ -4,6 +4,7 @@ import axios, { AxiosError } from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
+import LoadingComponent from "./loading-comp";
 
 interface ResearchRequestBody {
     title: string;
@@ -39,6 +40,7 @@ export function UploadingButton(props: {
     const send = params.get("send") ?? "";
 
     const [isLoading, setIsLoading] = useState(false);
+    const [isUploading, setIsUploading] = useState(false);
 
     let publication_required = false;
 
@@ -52,6 +54,7 @@ export function UploadingButton(props: {
 
     return (
         <>
+            {isUploading ? <LoadingComponent /> : null}
             {props.trigger == "upload" && (
                 <fieldset className="fieldset">
                     <legend className="fieldset-legend">
@@ -108,16 +111,19 @@ export function UploadingButton(props: {
                             })
                             .finally(() => setIsLoading(false));
                     }
-                    if (props.trigger == "upload")
+                    if (props.trigger == "upload") {
+                        setIsUploading(true);
                         return fileUploadHandler(file, ref, send)
                             .then(() => {
                                 setIsLoading(true);
                                 setIsLoading(false);
+                                setIsUploading(false);
                                 router.replace("/resource-success");
                             })
                             .catch((e) => {
                                 const err = e as AxiosError;
                                 const { response } = err;
+
                                 if (response?.status === 400) {
                                     toast.warning("No file attatched", {
                                         richColors: true,
@@ -143,7 +149,10 @@ export function UploadingButton(props: {
                                     return;
                                 }
                             })
-                            .finally(() => {});
+                            .finally(() => {
+                                setIsUploading(false);
+                            });
+                    }
                 }}
             >
                 {isLoading ? (
