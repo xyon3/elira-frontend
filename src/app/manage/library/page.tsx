@@ -1,12 +1,28 @@
 "use client";
+import CreateNewShelfModal from "@/app/lib/components/create-shelf-modal";
 import axios from "axios";
-import { Book, FileUp, Save, SquarePen, Trash2, X } from "lucide-react";
+import {
+    BetweenHorizontalStart,
+    Book,
+    BookPlus,
+    FileUp,
+    Save,
+    SquarePen,
+    Trash2,
+    X,
+} from "lucide-react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { toast, Toaster } from "sonner";
 import Swal from "sweetalert2";
 
 export default function ManageLibraryPage() {
     const [shelves, setShelves] = useState<null | any[]>(null);
+
+    const params = useSearchParams();
+
+    const modal_shelf = params.get("modal_shelf");
 
     useEffect(() => {
         if (!shelves) {
@@ -27,8 +43,16 @@ export default function ManageLibraryPage() {
 
     return (
         <>
+            <CreateNewShelfModal modal_shelf={modal_shelf} />
             <Toaster richColors={true} />
             <div className="space-y-8">
+                <Link
+                    className="btn btn-info"
+                    href="/manage/library?modal_shelf="
+                >
+                    <BetweenHorizontalStart />
+                    New Shelf
+                </Link>
                 {shelves &&
                     shelves.map((shelf) => (
                         <Shelf
@@ -50,11 +74,20 @@ function Shelf(props: {
 }) {
     return (
         <div className="overflow-x-auto p-6 rounded-4xl space-y-6 bg-base-100 shadow-lg">
-            <h2 className="text-3xl font-bold">
-                {props.identifier === "default"
-                    ? "OFF THE SHELF"
-                    : props.identifier}
-            </h2>
+            <div className="flex items-center justify-between">
+                <h2 className="text-3xl font-bold">
+                    {props.identifier === "default"
+                        ? "OFF THE SHELF"
+                        : props.identifier}
+                </h2>
+
+                {props.identifier === "default" ? (
+                    <Link href="/uploading/book" className="btn btn-info">
+                        <BookPlus />
+                        Add Book
+                    </Link>
+                ) : null}
+            </div>
             <table className="table">
                 {/* head */}
                 <thead>
