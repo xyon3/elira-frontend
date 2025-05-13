@@ -1,7 +1,8 @@
 "use client";
 
 import axios from "axios";
-import { use, useEffect } from "react";
+import { useEffect } from "react";
+import { Toaster } from "sonner";
 
 export default function Home() {
     useEffect(() => {
@@ -17,6 +18,7 @@ export default function Home() {
 
     return (
         <article className="container">
+            <Toaster />
             <div
                 className="hero h-96 rounded-2xl"
                 style={{

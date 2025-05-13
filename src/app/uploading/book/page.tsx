@@ -83,6 +83,7 @@ function InputInformation() {
 function Uploads() {
     return (
         <article className="flex flex-col items-center justify-center gap-16">
+            <Toaster />
             <div className="flex justify-center mb-32">
                 <ul className="steps w-[42rem]">
                     <li className="step step-primary cursor-pointer">

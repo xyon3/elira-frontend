@@ -21,10 +21,7 @@ export function Sidebar() {
         <>
             <div className={isHidden ? "w-24" : "w-96 2xl:w-[24rem]"}></div>
             <nav
-                className={
-                    "bg-base-200/80 rounded-box h-full fixed " +
-                    (isHidden ? "" : "w-64")
-                }
+                className={`bg-base-100/80 h-full fixed shadow-2xl top-0 left-0 rounded-r-2xl ${isHidden ? "" : "w-64"}`}
             >
                 <button
                     className="btn btn-ghost m-1 mt-4"
@@ -64,7 +61,7 @@ export function Sidebar() {
                         </li>
                     </ul>
                 </div>
-                {isLoggedIn && subject?.code === 0 ? (
+                {isLoggedIn && (subject?.code ?? 3) < 3 ? (
                     <div>
                         <h3
                             hidden={isHidden}

@@ -20,8 +20,9 @@ export const useAuthStore = create<AuthStore>()(
             isLoggedIn: false,
             subject: null,
 
-            setSubject: (newSubject: Subject) =>
-                set(() => ({ isLoggedIn: true, subject: newSubject })),
+            setSubject: (newSubject: Subject) => {
+                set(() => ({ isLoggedIn: true, subject: newSubject }));
+            },
             logout: (newSubject: null) =>
                 set(() => ({ isLoggedIn: false, subject: newSubject })),
         }),

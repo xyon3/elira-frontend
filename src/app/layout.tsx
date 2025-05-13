@@ -44,7 +44,7 @@ export default function RootLayout({
                 <img
                     src="/assets/background.png"
                     alt=""
-                    className="w-screen h-screen fixed -z-50 object-cover top-0 left-0 opacity-30"
+                    className="w-screen h-screen fixed -z-50 object-cover top-0 left-0 opacity-30 select-none pointer-events-none"
                 />
             </body>
         </html>

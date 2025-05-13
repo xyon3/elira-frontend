@@ -7,10 +7,11 @@ import {
     Search,
     SquareLibrary,
 } from "lucide-react";
+import { Toaster } from "sonner";
 
 axios.defaults.baseURL = process.env.ELIRA_BACKEND;
 
-export default async function Repository(props: {
+export default async function LibraryPage(props: {
     searchParams: Promise<{
         page: string;
     }>;
@@ -24,12 +25,20 @@ export default async function Repository(props: {
             (page ? page : 1),
     });
 
+    const shelfedResponse = await axios({
+        method: "GET",
+        url: "/api/shelves",
+    });
+
+    console.log(shelfedResponse.data);
+
     const paginated = paginatedResponse.data;
 
     console.log(paginated);
 
     return (
         <article className="space-y-6">
+            <Toaster />
             <section className="grid space-y-8 mt-16 w-full">
                 <h2
                     id="search"
@@ -38,6 +47,59 @@ export default async function Repository(props: {
                     <SquareLibrary size={64} />
                     &nbsp; E-Library
                 </h2>
+
+                <div className="grid gap-16">
+                    {shelfedResponse.data.length > 0 &&
+                        shelfedResponse.data
+                            .sort((a: any, b: any) =>
+                                a._id === "default"
+                                    ? -1
+                                    : b._id === "default"
+                                      ? 1
+                                      : 0,
+                            )
+                            .map((shelf: any) => {
+                                return (
+                                    <div key={shelf._id}>
+                                        <div className="flex gap-4 items-center">
+                                            <a
+                                                href=""
+                                                className="btn btn-info btn-xs"
+                                            >
+                                                See more
+                                            </a>
+                                            <h4 className="font-bold text-xl">
+                                                {shelf._id === "default"
+                                                    ? "Off the shelf"
+                                                    : `SHELF: ${shelf._id}`}
+                                            </h4>
+                                        </div>
+                                        <ul className="list">
+                                            {shelf.books.map((book: any) => (
+                                                <li
+                                                    key={book.id}
+                                                    className="list-row"
+                                                >
+                                                    <Book />
+                                                    <a
+                                                        className="link"
+                                                        href={`/library/book?id=${book.id}`}
+                                                        // href={
+                                                        //     process.env.ELIRA_BACKEND +
+                                                        //     book.path +
+                                                        //     "/" +
+                                                        //     book.filename
+                                                        // }
+                                                    >
+                                                        {book.title}
+                                                    </a>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                );
+                            })}
+                </div>
 
                 {/*
                 <label className="input input-lg max-w-96 w-full">
@@ -49,7 +111,7 @@ export default async function Repository(props: {
                         placeholder="Search"
                     />
                 </label>
-                     * */}
+
 
                 <div className="grid gap-8">
                     <ul className="list text-lg">
@@ -62,7 +124,7 @@ export default async function Repository(props: {
                                     >
                                         <Book />
                                         <a
-                                            href={`${process.env.ELIRA_BACKEND}${book.path}/${book.filename}`}
+                                            href={`/library/book/?id=${book.id}`}
                                         >
                                             {book.title}
                                         </a>
@@ -101,6 +163,8 @@ export default async function Repository(props: {
                         </div>
                     </div>
                 </div>
+
+                     * */}
             </section>
         </article>
     );

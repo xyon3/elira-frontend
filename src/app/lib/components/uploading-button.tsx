@@ -1,6 +1,6 @@
 "use client";
 
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -112,11 +112,38 @@ export function UploadingButton(props: {
                         return fileUploadHandler(file, ref, send)
                             .then(() => {
                                 setIsLoading(true);
-                            })
-                            .finally(() => {
                                 setIsLoading(false);
                                 router.replace("/resource-success");
-                            });
+                            })
+                            .catch((e) => {
+                                const err = e as AxiosError;
+                                const { response } = err;
+                                if (response?.status === 400) {
+                                    toast.warning("No file attatched", {
+                                        richColors: true,
+                                        closeButton: true,
+                                    });
+                                    return;
+                                }
+                                if (response?.status === 415) {
+                                    toast.error("Could not upload file", {
+                                        richColors: true,
+                                        description:
+                                            "Only PDF files are allowed",
+                                        closeButton: true,
+                                    });
+                                    return;
+                                }
+                                if (response?.status === 413) {
+                                    toast.error("Could not upload file", {
+                                        richColors: true,
+                                        description: "File must no exceed 20mb",
+                                        closeButton: true,
+                                    });
+                                    return;
+                                }
+                            })
+                            .finally(() => {});
                 }}
             >
                 {isLoading ? (
@@ -162,13 +189,9 @@ async function fileUploadHandler(
             ? "/api/info-publication?unique="
             : "/api/info-book?unique=";
 
-    try {
-        const res = await axios.put(url + referenceID, formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        });
-    } catch (err) {
-        console.error("Upload failed:", err);
-    }
+    const res = await axios.put(url + referenceID, formData, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    });
 }

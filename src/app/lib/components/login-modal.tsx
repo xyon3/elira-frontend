@@ -5,6 +5,7 @@ import { X } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import { useAuthStore } from "../store/auth-store";
+import { toast } from "sonner";
 
 export function LoginModal() {
     const search = useSearchParams();
@@ -26,7 +27,8 @@ export function LoginModal() {
             <div className="fixed z-40 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-black/15 backdrop-blur-xs h-screen w-screen"></div>
             <section className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                 <fieldset className="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4">
-                    <div className="place-self-end">
+                    <div className="place-self-end flex w-full">
+                        <h1 className="text-2xl font-black mr-auto">LOGIN</h1>
                         <button
                             className="btn btn-ghost btn-sm hover:text-red-200"
                             onClick={() => {
@@ -75,7 +77,30 @@ export function LoginModal() {
                                 url: "/api/auth",
                                 data: credentials,
                             }).then((response) => {
+                                if (response.data.results === "not active") {
+                                    toast.error("User not activated", {
+                                        closeButton: true,
+                                        richColors: true,
+                                    });
+                                    return;
+                                }
+
+                                console.log(response.data);
+                                if (response.data.results.statusCode === 401) {
+                                    toast.error(
+                                        "Incorrect username or password",
+                                        {
+                                            closeButton: true,
+                                            richColors: true,
+                                        },
+                                    );
+                                    return;
+                                }
                                 setSubject(response.data.results);
+                                toast.success("Login Success!", {
+                                    closeButton: true,
+                                    richColors: true,
+                                });
                                 router.replace("/home");
                             });
                         }}
@@ -87,4 +112,3 @@ export function LoginModal() {
         </>
     );
 }
-function loginHandler() {}

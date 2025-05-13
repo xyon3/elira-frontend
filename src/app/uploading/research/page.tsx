@@ -108,12 +108,13 @@ function InputInformation() {
                                 </option>
                                 <option>Bachelors</option>
                                 <option>Masters</option>
+                                <option>Doctorate</option>
                                 <option>Others</option>
                             </select>
                         </fieldset>
                         <fieldset className="fieldset">
                             <legend className="fieldset-legend">
-                                Issue Date
+                                Issue Year
                             </legend>
                             <input
                                 type="text"

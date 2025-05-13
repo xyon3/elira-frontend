@@ -13,11 +13,6 @@ export default async function Repository(props: {
 }) {
     const { page = "1", search = "" } = await props.searchParams;
 
-    const recentresponse = await axios({
-        method: "GET",
-        url: "/api/publications?isPaginated=1&page=1&limit=5",
-    });
-
     const paginatedResponse = await axios({
         method: "GET",
         url: "/api/publications",
@@ -38,102 +33,11 @@ export default async function Repository(props: {
         },
     });
 
-    const recentResearches = recentresponse.data.data;
     const paginated = paginatedResponse.data;
 
     return (
         <article className="space-y-6">
             <Toaster />
-            <section className="space-y-8 flex flex-col items-center">
-                <div className="bg-base-300/40 w-full flex justify-center rounded-3xl">
-                    <img
-                        className="rounded-3xl drop-shadow"
-                        src="/assets/repository-banner.png"
-                        alt="repository-banner"
-                        width={800}
-                    />
-                </div>
-
-                <p className="text-lg w-[800px]">
-                    The Research Repository of the University of Perpetual Help
-                    System GMA Campus, in collaboration with the University
-                    Library and Research Office, welcomes research contributions
-                    from faculty, students, and organizations within the campus
-                    community.
-                </p>
-            </section>
-
-            <div className="divider"></div>
-
-            <section className="grid grid-cols-2">
-                <div className="p-8">
-                    <h4 className="font-bold text-lg">Departments</h4>
-                    <ul className="list">
-                        {departments.data.users.length > 0 ? (
-                            departments.data.users.map((depts: any) => {
-                                return (
-                                    <li
-                                        key={depts.id}
-                                        className="list-row hover:bg-base-200"
-                                    >
-                                        <a
-                                            href={`/repository/${depts.email}`}
-                                            className=" flex items-center gap-4 font-bold"
-                                        >
-                                            <School />
-                                            {depts.fullname}
-                                        </a>
-                                    </li>
-                                );
-                            })
-                        ) : (
-                            <div className="text-center flex items-center gap-6 mt-6">
-                                <span className="text-5xl">🤷🏻</span>
-                                <div>
-                                    <h3 className="font-bold text-xl">
-                                        There are no papers here..
-                                    </h3>
-                                    <p>Ask the a custodian to upload some!</p>
-                                </div>
-                            </div>
-                        )}
-                    </ul>
-                </div>
-                <div className="p-8">
-                    <h4 className="font-bold text-lg">Recent uploads</h4>
-                    <ul className="list">
-                        {recentResearches.length > 0 ? (
-                            recentResearches.map((research: any) => {
-                                return (
-                                    <li
-                                        key={research.id}
-                                        className="list-row hover:bg-base-200"
-                                    >
-                                        <a
-                                            href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
-                                        >
-                                            {research.title} (
-                                            {research.issueDate})
-                                        </a>
-                                    </li>
-                                );
-                            })
-                        ) : (
-                            <div className="text-center flex items-center gap-6 mt-6">
-                                <span className="text-5xl">🤷🏻</span>
-                                <div>
-                                    <h3 className="font-bold text-xl">
-                                        There are no papers here..
-                                    </h3>
-                                    <p>Ask the a custodian to upload some!</p>
-                                </div>
-                            </div>
-                        )}
-                    </ul>
-                </div>
-            </section>
-
-            <div className="divider"></div>
 
             <section className="grid space-y-8 place-items-center mt-24">
                 <h2

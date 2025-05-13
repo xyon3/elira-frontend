@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { useAuthStore } from "../store/auth-store";
 import Link from "next/link";
+import { toast } from "sonner";
 
 export function Header() {
     const router = useRouter();
@@ -24,6 +25,11 @@ export function Header() {
                         className="btn btn-ghost hover:bg-none font-bold"
                         onClick={() => {
                             logout(null);
+                            toast.warning("You are now logged out", {
+                                richColors: true,
+                                closeButton: true,
+                            });
+
                             router.refresh();
                         }}
                     >

@@ -49,6 +49,10 @@ export async function POST(req: NextRequest) {
             data: credentials,
         });
 
+        if (response.data.isActive == 0) {
+            return NextResponse.json({ results: "not active" });
+        }
+
         const cookie = response.data.cookieParams;
 
         cookieStore.set("token", cookie.value, {
@@ -59,7 +63,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ results: JSON.parse(cookie.value) });
     } catch (e) {
         const err = e as AxiosError;
-
         const response: any = await err.response?.data;
 
         return NextResponse.json({ results: response });
