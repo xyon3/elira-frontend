@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 
 export default function ManageLibraryLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
-    return children;
+    return <Suspense>{children}</Suspense>;
 }
