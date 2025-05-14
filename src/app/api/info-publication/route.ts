@@ -4,6 +4,19 @@ import { NextResponse, type NextRequest } from "next/server";
 
 axios.defaults.baseURL = process.env.ELIRA_BACKEND;
 
+export async function DELETE(req: NextRequest) {
+    const params = req.nextUrl.searchParams;
+
+    const pubID = params.get("pub_id");
+
+    const response = await axios({
+        method: "DELETE",
+        url: "/api/publications/" + pubID,
+    });
+
+    return NextResponse.json({});
+}
+
 export async function GET(req: NextRequest) {
     const params = req.nextUrl.searchParams;
 

@@ -2,9 +2,11 @@
 
 import LoadingComponent from "@/app/lib/components/loading-comp";
 import axios from "axios";
+import { Save, Trash2, X } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { Toaster } from "sonner";
+import Swal from "sweetalert2";
 
 export default function ManageOneRepositoryPage() {
     const { slug } = useParams<{ slug: string }>();
@@ -222,19 +224,67 @@ function InputInformation(props: { pubDetails: any }) {
 
                     <div className="space-x-2 flex justify-end">
                         <button
+                            className="btn btn-ghost btn-error text-red-900 mr-auto"
+                            onClick={() => {
+                                Swal.fire({
+                                    title: "Are you sure?",
+                                    text: "Are you sure you want to delete this publication?",
+                                    icon: "warning",
+                                    showCancelButton: true,
+                                    confirmButtonText: "Yes",
+                                    cancelButtonText: "Cancel",
+                                }).then((result) => {
+                                    if (result.isConfirmed) {
+                                        axios
+                                            .delete(
+                                                "/api/info-publication/?pub_id=" +
+                                                    props.pubDetails.id,
+                                            )
+                                            .then((response) => {
+                                                console.log(
+                                                    "Fetched publication:",
+                                                    response.data,
+                                                );
+
+                                                window.location.href =
+                                                    "/manage/repository";
+
+                                                // Do something with the data
+                                            })
+                                            .catch((error) => {
+                                                console.error(
+                                                    "Error fetching publication:",
+                                                    error,
+                                                );
+                                            });
+                                    } else if (result.isDismissed) {
+                                        console.log(
+                                            "User cancelled the action.",
+                                        );
+                                        // Optional: handle cancel logic here
+                                    }
+                                });
+                            }}
+                        >
+                            <Trash2 />
+                            Delete
+                        </button>
+                        <button
                             className="btn btn-success"
                             onClick={() => {
                                 handleSave();
                             }}
                         >
+                            <Save />
                             Save
                         </button>
                         <button
-                            className="btn btn-error"
+                            className="btn btn-error text-red-50"
                             onClick={() => {
                                 router.back();
                             }}
                         >
+                            <X />
                             Cancel
                         </button>
                     </div>
