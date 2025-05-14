@@ -6,21 +6,27 @@ import { Toaster } from "sonner";
 axios.defaults.baseURL = process.env.ELIRA_BACKEND;
 
 export default async function Repository(props: {
+    params: Promise<{ slug?: string }>;
     searchParams: Promise<{
         page?: string;
         search?: string;
     }>;
 }) {
+    const { slug } = await props.params;
+
     const { page = "1", search = "" } = await props.searchParams;
+
+    const department = decodeURIComponent(slug ?? "");
 
     const paginatedResponse = await axios({
         method: "GET",
-        url: "/api/publications",
+        url: "/api/publications/dept",
         params: {
             isPaginated: 1,
             limit: 12,
             randomize: 1,
             page,
+            department,
             keyword: search,
         },
     });

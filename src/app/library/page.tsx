@@ -63,7 +63,7 @@ export default async function LibraryPage(props: {
                                     <div key={shelf._id}>
                                         <div className="flex gap-4 items-center">
                                             <a
-                                                href=""
+                                                href={`/library/shelf?sub=${shelf._id}`}
                                                 className="btn btn-info btn-xs"
                                             >
                                                 See more

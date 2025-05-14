@@ -110,7 +110,8 @@ export default async function Repository(props: {
                                         className="list-row hover:bg-base-200"
                                     >
                                         <a
-                                            href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                                            href={`/repository/publication?_id=${research.id}`}
+                                            // href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
                                         >
                                             {research.title} (
                                             {research.issueDate})
@@ -173,7 +174,8 @@ export default async function Repository(props: {
                                     >
                                         <FileText />
                                         <a
-                                            href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
+                                            href={`/repository/publication?_id=${research.id}`}
+                                            // href={`${process.env.ELIRA_BACKEND}${research.path}/${research.filename}`}
                                         >
                                             {research.title} (
                                             {research.issueDate})

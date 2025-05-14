@@ -16,7 +16,14 @@ export function Header() {
         <header className="flex justify-end w-full bg-red ml-auto items-center gap-6">
             <div className="text-2xl font-bold mr-auto flex items-center gap-2">
                 <PanelLeft className="hidden" />
-                <h1 className="">ELIRA</h1>
+                <button
+                    className="btn btn-ghost text-2xl"
+                    onClick={() => {
+                        router.back();
+                    }}
+                >
+                    ELIRA
+                </button>
             </div>
 
             {isLoggedIn ? (

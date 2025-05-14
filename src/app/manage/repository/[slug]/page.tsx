@@ -1,5 +1,6 @@
 "use client";
 
+import LoadingComponent from "@/app/lib/components/loading-comp";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -65,6 +66,8 @@ function InputInformation(props: { pubDetails: any }) {
         }
     };
 
+    const [isUploading, setIsUploading] = useState(false);
+
     const handleSave = async () => {
         axios({
             method: "PATCH",
@@ -78,13 +81,21 @@ function InputInformation(props: { pubDetails: any }) {
         });
 
         if (file) {
-            fileUploadHandler(file, props.pubDetails.id, "publication");
+            setIsUploading(true);
+            fileUploadHandler(file, props.pubDetails.id, "publication")
+                .then(() => {
+                    setIsUploading(false);
+                })
+                .finally(() => {
+                    setIsUploading(false);
+                });
         }
     };
 
     return (
         <>
             <Toaster />
+            {isUploading ? <LoadingComponent /> : null}
             <article className="flex items-center justify-center gap-16 mt-30">
                 <div className="grid w-[36rem] gap-6">
                     <label className="floating-label">
