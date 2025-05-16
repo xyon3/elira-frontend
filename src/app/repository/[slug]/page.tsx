@@ -41,6 +41,24 @@ export default async function Repository(props: {
 
     const paginated = paginatedResponse.data;
 
+
+    if (!paginated) {
+        return (
+        <article className="space-y-6">
+            <Toaster />
+
+            <section className="grid space-y-8 place-items-center mt-24">
+                <h2
+                    id="therepo"
+                    className="font-black text-4xl flex items-center"
+                >
+                    <BookMarked size={64} />
+                    &nbsp; The Repository ({department})
+                </h2>
+            </article>
+        )
+    }
+
     return (
         <article className="space-y-6">
             <Toaster />
@@ -73,7 +91,6 @@ export default async function Repository(props: {
                 </form>
 
                 <div className="grid place-items-center gap-8">
-                    {paginated && (
                     <ul className="list text-lg">
                         {paginated.data && paginated.data.length > 0 ? (
                             paginated.data.map((research: any) => {
@@ -127,7 +144,6 @@ export default async function Repository(props: {
                             },
                         )}
                     </div>
-                            )}
                 </div>
             </section>
         </article>
