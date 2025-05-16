@@ -55,7 +55,7 @@ export default async function Repository(props: {
                     <BookMarked size={64} />
                     &nbsp; The Repository ({department})
                 </h2>
-            </section></section>
+            </section>
             </article>
         )
     }
