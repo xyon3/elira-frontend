@@ -74,6 +74,7 @@ export default async function Repository(props: {
 
                 <div className="grid place-items-center gap-8">
                     <ul className="list text-lg">
+                        {paginated.data && (
                         {paginated.data.length > 0 ? (
                             paginated.data.map((research: any) => {
                                 return (
@@ -101,6 +102,9 @@ export default async function Repository(props: {
                                     <p>Ask the a custodian to upload some!</p>
                                 </div>
                             </div>
+                        )}
+
+            
                         )}
                     </ul>
                     <div className="join">
