@@ -1,5 +1,6 @@
 import axios from "axios";
 import { SquarePen } from "lucide-react";
+import { cookies } from "next/headers";
 import Link from "next/link";
 
 export default async function ManageRepositoryPage(props: {
@@ -8,6 +9,23 @@ export default async function ManageRepositoryPage(props: {
         search?: string;
     }>;
 }) {
+    const cookieStore = await cookies();
+
+    const token = cookieStore.get("token");
+
+    if (!token) {
+        return <>Not Allowed</>;
+    }
+
+    const identity = JSON.parse(token.value);
+
+    const role = identity.role;
+
+    const user = {
+        role: identity.role,
+        email: identity.email,
+    };
+
     const { page = "1", search = "" } = await props.searchParams;
 
     const paginatedResponse = await axios({
@@ -62,11 +80,19 @@ export default async function ManageRepositoryPage(props: {
                         <tr>
                             <th className="w-[10%]"></th>
                             <th>Name</th>
+                            <th>Department</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {paginated.data.map(
-                            (publication: any, index: number) => {
+                        {paginated.data
+                            .filter((d: any) => {
+                                if (user.role === "custodian") {
+                                    return true;
+                                }
+
+                                return d.uploadedBy.email == user.email;
+                            })
+                            .map((publication: any, index: number) => {
                                 return (
                                     <tr
                                         key={publication.id}
@@ -81,7 +107,7 @@ export default async function ManageRepositoryPage(props: {
                                                     <SquarePen size={18} /> Edit
                                                 </Link>
                                                 &nbsp; &nbsp;
-                                                {index + 1}
+                                                <span>{index + 1}</span>
                                             </div>
                                         </th>
                                         <td>
@@ -93,10 +119,17 @@ export default async function ManageRepositoryPage(props: {
                                                 {publication.title}
                                             </Link>
                                         </td>
+                                        <td>
+                                            <div className="font-bold">
+                                                {
+                                                    publication.uploadedBy
+                                                        .fullname
+                                                }
+                                            </div>
+                                        </td>
                                     </tr>
                                 );
-                            },
-                        )}
+                            })}
                     </tbody>
                 </table>
 

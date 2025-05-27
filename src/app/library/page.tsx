@@ -60,43 +60,41 @@ export default async function LibraryPage(props: {
                             )
                             .map((shelf: any) => {
                                 return (
-                                    <div key={shelf._id}>
-                                        <div className="flex gap-4 items-center">
-                                            <a
-                                                href={`/library/shelf?sub=${shelf._id}`}
-                                                className="btn btn-info btn-xs"
-                                            >
-                                                See more
-                                            </a>
-                                            <h4 className="font-bold text-xl">
-                                                {shelf._id === "default"
-                                                    ? "Off the shelf"
-                                                    : `SHELF: ${shelf._id}`}
-                                            </h4>
-                                        </div>
-                                        <ul className="list">
-                                            {shelf.books.map((book: any) => (
-                                                <li
-                                                    key={book.id}
-                                                    className="list-row"
+                                    shelf.books.length > 0 && (
+                                        <div key={shelf._id}>
+                                            <div className="flex gap-4 items-center">
+                                                <a
+                                                    href={`/library/shelf?sub=${shelf._id}`}
+                                                    className="btn btn-info btn-xs"
                                                 >
-                                                    <Book />
-                                                    <a
-                                                        className="link"
-                                                        href={`/library/book?id=${book.id}`}
-                                                        // href={
-                                                        //     process.env.ELIRA_BACKEND +
-                                                        //     book.path +
-                                                        //     "/" +
-                                                        //     book.filename
-                                                        // }
-                                                    >
-                                                        {book.title}
-                                                    </a>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
+                                                    See more
+                                                </a>
+                                                <h4 className="font-bold text-xl">
+                                                    {shelf._id === "default"
+                                                        ? "Off the shelf"
+                                                        : `SHELF: ${shelf._id}`}
+                                                </h4>
+                                            </div>
+                                            <ul className="list">
+                                                {shelf.books.map(
+                                                    (book: any) => (
+                                                        <li
+                                                            key={book.id}
+                                                            className="list-row"
+                                                        >
+                                                            <Book />
+                                                            <a
+                                                                className="link"
+                                                                href={`/library/book?id=${book.id}`}
+                                                            >
+                                                                {book.title}
+                                                            </a>
+                                                        </li>
+                                                    ),
+                                                )}
+                                            </ul>
+                                        </div>
+                                    )
                                 );
                             })}
                 </div>

@@ -37,7 +37,7 @@ export function Header() {
                                 closeButton: true,
                             });
 
-                            router.refresh();
+                            router.replace("/");
                         }}
                     >
                         Sign out

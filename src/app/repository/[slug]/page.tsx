@@ -20,7 +20,7 @@ export default async function Repository(props: {
 
     const paginatedResponse = await axios({
         method: "GET",
-        url: "/api/publications/dept",
+        url: "/api/publications",
         params: {
             isPaginated: 1,
             limit: 12,
@@ -28,36 +28,35 @@ export default async function Repository(props: {
             page,
             department,
             keyword: search,
+            dept: decodeURIComponent(slug ?? ""),
         },
     });
 
-    const departments = await axios({
-        method: "GET",
-        url: "/api/users",
-        params: {
-            filter: "depts",
-        },
-    });
+    const paginated = paginatedResponse;
 
-    const paginated = paginatedResponse.data;
-
+    // console.log(slug);
+    // console.log(
+    //     paginated.data.map(
+    //         (e: any) => e.uploadedBy.email == decodeURIComponent(slug ?? ""),
+    //     ),
+    // );
 
     if (!paginated) {
         return (
-        <article className="space-y-6">
-            <Toaster />
+            <article className="space-y-6">
+                <Toaster />
 
-            <section className="grid space-y-8 place-items-center mt-24">
-                <h2
-                    id="therepo"
-                    className="font-black text-4xl flex items-center"
-                >
-                    <BookMarked size={64} />
-                    &nbsp; The Repository ({department})
-                </h2>
-            </section>
+                <section className="grid space-y-8 place-items-center mt-24">
+                    <h2
+                        id="therepo"
+                        className="font-black text-4xl flex items-center"
+                    >
+                        <BookMarked size={64} />
+                        &nbsp; The Repository ({department})
+                    </h2>
+                </section>
             </article>
-        )
+        );
     }
 
     return (
@@ -70,10 +69,12 @@ export default async function Repository(props: {
                     className="font-black text-4xl flex items-center"
                 >
                     <BookMarked size={64} />
-                    &nbsp; The Repository
+                    &nbsp; The Repository ({department})
                 </h2>
 
-                {/* Search Form */}
+                {/* Search Form 
+
+
                 <form
                     method="GET"
                     action="/repository#therepo"
@@ -91,10 +92,14 @@ export default async function Repository(props: {
                     </label>
                 </form>
 
+
+                */}
+
                 <div className="grid place-items-center gap-8">
                     <ul className="list text-lg">
                         {paginated.data && paginated.data.length > 0 ? (
                             paginated.data.map((research: any) => {
+                                console.log(research.path);
                                 return (
                                     <li
                                         key={research.id + "00"}
@@ -122,29 +127,6 @@ export default async function Repository(props: {
                             </div>
                         )}
                     </ul>
-
-                    <div className="join">
-                        {Array.from(
-                            { length: paginated.meta.lastPage },
-                            (_, i) => {
-                                const pageNum = i + 1;
-                                const query = new URLSearchParams({
-                                    page: pageNum.toString(),
-                                    ...(search && { search }),
-                                }).toString();
-
-                                return (
-                                    <a
-                                        key={`${i}-page`}
-                                        className="join-item btn"
-                                        href={`/repository?${query}#search`}
-                                    >
-                                        {pageNum}
-                                    </a>
-                                );
-                            },
-                        )}
-                    </div>
                 </div>
             </section>
         </article>

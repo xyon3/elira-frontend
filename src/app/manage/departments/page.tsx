@@ -2,6 +2,7 @@
 
 import axios from "axios";
 import { School, SquarePen } from "lucide-react";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function ManageDepartmentsPage(props: {
@@ -21,21 +22,56 @@ export default async function ManageDepartmentsPage(props: {
         axios({
             method: "DELETE",
             url: process.env.ELIRA_BACKEND + "/api/users/" + id,
-        }).then(() => {});
-        console.log("3223");
-        redirect("/manage/departments#");
+        })
+            .then(() => {})
+            .finally(() => {
+                redirect("/manage/departments#");
+            });
     } else if (action === "activate") {
         axios({
             method: "PUT",
             url: process.env.ELIRA_BACKEND + "/api/users/" + id,
-        }).then(() => {});
-        console.log("3223");
-        redirect("/manage/departments#");
+        })
+            .then(() => {})
+            .finally(() => {
+                redirect("/manage/departments#");
+            });
+    } else if (action === "delete") {
+        axios({
+            method: "DELETE",
+            url:
+                process.env.ELIRA_BACKEND +
+                "/api/users/" +
+                id +
+                "?persist=true",
+        })
+            .then(() => {
+                return redirect("/manage/departments#");
+            })
+            .catch(() => {
+                return redirect("/manage/departments#");
+            })
+            .finally(() => {
+                return redirect("/manage/departments#");
+            });
     }
 
     return (
         <article>
-            <div className="overflow-x-auto">
+            <div className="overflow-x-auto space-y-4">
+                <Link
+                    href="/manage/departments/new"
+                    className="btn btn-primary"
+                >
+                    New Department
+                </Link>
+
+                <div role="alert" className="alert alert-error alert-dash">
+                    <span className="font-bold">
+                        Warning: Departments with uploaded repository or books
+                        will not be deleted.
+                    </span>
+                </div>
                 <table className="table">
                     {/* head */}
                     <thead>
@@ -50,6 +86,9 @@ export default async function ManageDepartmentsPage(props: {
 
                         {data.users.length > 0 &&
                             data.users.map((dept: any) => {
+                                if (action === "delete" && dept.id == id)
+                                    return null;
+
                                 return (
                                     <tr key={dept.email}>
                                         <td>
@@ -72,15 +111,15 @@ export default async function ManageDepartmentsPage(props: {
                                                 {dept.role.title}
                                             </span>
                                             <span className="badge badge-ghost badge-sm">
-                                                {dept.isActive
-                                                    ? "Activated"
-                                                    : "Deactivated"}
+                                                {!dept.isActive
+                                                    ? "Deactivated"
+                                                    : "Activated"}
                                             </span>
                                         </td>
-                                        <th>
+                                        <th className="space-x-2">
                                             {dept.isActive ? (
                                                 <a
-                                                    className="btn btn-error"
+                                                    className="btn btn-warning"
                                                     href={`/manage/departments/?id=${dept.id}&action=deactivate`}
                                                 >
                                                     Deactivate
@@ -93,6 +132,13 @@ export default async function ManageDepartmentsPage(props: {
                                                     Activate
                                                 </a>
                                             )}
+
+                                            <a
+                                                className="btn btn-error"
+                                                href={`/manage/departments/?id=${dept.id}&action=delete`}
+                                            >
+                                                Delete
+                                            </a>
                                         </th>
                                     </tr>
                                 );

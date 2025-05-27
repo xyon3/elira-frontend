@@ -86,7 +86,7 @@ export async function PUT(req: NextRequest) {
         headers: {
             "Content-Type": "multipart/form-data",
         },
-    });
+    }).catch(() => console.log("Caught"));
 
     return NextResponse.json({});
 }
