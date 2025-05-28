@@ -25,10 +25,21 @@ export default async function Repository(props: {
         url: "/api/publications/" + _id,
     });
 
+    if (onePublication.status === 200) {
+        await axios({
+            method: "POST",
+            url: "/api/status/increment",
+            data: {
+                id: _id,
+                type: "publication",
+            },
+        });
+    }
+
     console.log(onePublication.data);
 
     const resource =
-        process.env.ELIRA_BACKEND +
+        "/api/resource?file=" +
         onePublication.data.path +
         "/" +
         onePublication.data.filename;
@@ -67,15 +78,7 @@ export default async function Repository(props: {
                             Upload Date: {onePublication.data.uploadDate}
                         </span>
                     </div>
-                    <a
-                        href={
-                            process.env.ELIRA_BACKEND +
-                            onePublication.data.path +
-                            "/" +
-                            onePublication.data.filename
-                        }
-                        className="btn btn-info btn-sm"
-                    >
+                    <a href={resource} className="btn btn-info btn-sm">
                         View fullscreen
                         <Maximize size={18} />
                     </a>
